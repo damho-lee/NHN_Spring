@@ -1,0 +1,77 @@
+= 2024. 01. 03
+
+== Spring Framework Dependency Injection(Annotation)
+
+=== Annotation 기반 설정 - Autowired
+* @Target 에 정의된 위치에 @Autowired Annotation을 사용할 수 있다
+[source]
+----
+@Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Autowired {
+    boolean required() default true;
+}
+----
+* 생성자에 @Autowired 를 설정합니다.
+* Constructor Injection
+* Spring Framework 에서 권장하는 생성자 방식으로 의존성을 주입합니다.
+** Spring 4.3 부터 생성자가 1개인 경우 생략 가능
+*** 생성자 하나만 있는 경우에는 그 생성자를 사용해서 의존성을 주입하기 때문. 관례
+
+=== Annotation 기반 설정 - @Autowired
+* 같은 타입의 객체가 여러개 존재하는 경우, 배열이나 Collection 으로 의존성을 주입할 수 있습니다.
+[source]
+----
+public class GreetingService {
+    private final List<Greeter> greeters;
+
+    @Autowired
+    public GreetingService(List<Greeter> greeters) {
+        // EnglishGreeter, KoreanGreeter 스프링 빈이 주입 됨.
+        // 순서는 알 수 없다.
+        this.greeters = greeters;
+    }
+}
+----
+
+=== Annotation 기반 설정 - @Autowired 미세조정
+
+.required 속성
+* @Required 어노테이션과 동일한 효과를 가진다.
+* 기본 값은 true 이다.
+
+.Optional 타입
+* 스프링 빈을 Optional 타입으로 받으면 자동으로 required=false 옵션이 설정된다고 볼 수 있다.
+
+=== Annotation 기반 설정 - @Autowired 미세조정
+
+* type 으로 autowire 한 경우, 같은 타입의 여러 빈이 존재할 경우에 오류가 발생한다. 이 때 특정 빈을 지정하는 방법을 제공한다.
+
+.primary 속성
+* 빈 설정에 primary 를 설정해 주면 같은 타입의 빈이 있더라도 우선 적용할 수 있다.
+[source]
+----
+<bean id="koreanGreeter" class="com.nhn.edu.springframework.ioc.helloworld.KoreanGreeter" scope="prototype" primary="true" >
+    </bean>
+----
+
+.@Qualifier
+* @Autowired 할 때 @Qualifier 를 지정하여 빈의 이름으로 의존성을 주입할 수 있다.
+[source]
+----
+public class GreetingService {
+
+    private final Greeter greeter;
+
+    @Autowired
+    public GreetingService(@Qualifier("englishGreeter") Greeter greeter) {
+        this.greeter = greeter;
+    }
+
+    public boolean greet() {
+        // 인터페이스의 메소드를 호출하지만 실제 구현 객체의 메소드가 실행됩니다.
+        return greeter.sayHello();
+    }
+}
+----

@@ -1,0 +1,64 @@
+= Aspect Oriented Programming(AOP)
+
+* OOP의 확장
+* 핵심 : 공통된 코드를 하나로 묶는다.
+
+== AOP
+* AOP란 프로그램 구조를 다른 방식으로 생각하게 함으로써 OOP를 보완합니다.
+* OOP에서 모듈화의 핵심단위는 클래스이지만 AOP에서 모듈화의 핵심단위는 관점(aspect)입니다.
+* 관점은 다양한 타입과 객체에 걸친 트랜잭션 관리같은 관심(concern)을 모듈화할 수 있게 합니다.
+** crosscutting concerns : 횡단 관심사
+** core concerns : 주요 관심사
+* 횡단 관심사와 주요 관심사를 분리하여 관점별로 각각 기능을 모듈화할 수 있습니다.
+* 설정을 추가하여 Weaving 합니다.
+
+== AOP 주요 용어
+.Aspect
+* 여러 클래스에 걸친 횡단 관심사의 모듈 (클래스)
+* 하나 이상의 Pointcut과 Advice의 조합으로 만들어지는 AOP의 기본 모듈
+* Spring framework 에서는 @Aspect 를 사용하거나 XML 에서 설정할 수 있습니다.
+
+.Join point
+* 프로그램 실행 중의 어떤 포인트를 의미 (메소드 실행, Exception 처리 등)
+* Pointcut의 후보라고 생각할 수 있습니다.
+* Spring AOP에서는 '메소드 실행' 만 대상입니다.
+
+.Advice
+* 타겟에 제공할 부가기능을 담은 모듈
+* 특정 Join Point에서 Aspect가 취하는 행동
+* EX) arround, before, after
+
+
+.Pointcut
+* Advice를 적용할 Join Point를 선별하는 작업 또는 그 기능을 적용한 모듈
+* Advice는 Pointcut 표현식과 연결되고 Pointcut이 매치한 Join Point에서 실행된다
+
+.Target object
+* 부가기능을 부여할 대상
+* 하나 이상의 Aspect로 어드바이된(advised) 객체
+* advised object라고 부르기도 함
+
+.AOP Proxy
+* 클라이언트와 타겟 사이에 투명하게 존재하면서 부가기능을 제공하는 오브                                                      *
+* aspect 계약(어드바이스 메서드 실행 등)을 위해 AOP에 의해 생성된
+
+.Advisor
+* Pointcut과 Advice를 하나씩 갖고 있는 객체
+* 스프링 AOP에서만 사용되는 용어
+
+.Weaving
+* 다른 애플리케이션 타입이느 어드바이즈 된 객체를 생성하는 객체와 관점을 연결하는 행위를 의미
+
+=== Spring AOP vs AspectJ
+* Spring AOP
+** AOP 개념을 스프링 빈(Spring Bean)에 적용하기 위한 것.
+** Spring Bean 대상이므로 ApplicationContext 가 처리한다
+** 런타임 Weaving
+* AspectJ
+** AOP 개념을 모든 객체에 적용하기 위한것
+** 컴파일 시점, 로드시점 Weaving
+
+
+
+
+
