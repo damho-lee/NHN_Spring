@@ -47,7 +47,7 @@
 * 스프링 AOP에서만 사용되는 용어
 
 .Weaving
-* 다른 애플리케이션 타입이느 어드바이즈 된 객체를 생성하는 객체와 관점을 연결하는 행위를 의미
+* 다른 애플리케이션 타입이나 어드바이즈 된 객체를 생성하는 객체와 관점을 연결하는 행위를 의미
 
 === Spring AOP vs AspectJ
 * Spring AOP
@@ -57,8 +57,141 @@
 * AspectJ
 ** AOP 개념을 모든 객체에 적용하기 위한것
 ** 컴파일 시점, 로드시점 Weaving
+** JVM 상태에서 사용할 수 있는 라이브러리
+** @Aspect, @Around 등이 AspectJ에서 차용된 것이라 @EnableAspectJAutoProxy 가 있어야 한다
+
+=== 포인트 컷
+* 타겟의 여러 조인포인트 중에 어드바이스를 적용할 대상을 지정하는 키워드입니다.
+* 스프링 AOP 는 스프링 빈의 메소드 실행 조인포인트만 지원합니다.
+* 포인트컷 선언은 포인트컷 표현식과 포인트컷 시그니쳐로 구성됩니다.
+[source]
+----
+@Pointcut("execution(* transfer(..))") // the pointcut expression
+private void anyOldTransfer() {} // the pointcut signature
+----
+
+=== 포인트 컷 표현식
+----
+@Pointcut(
+          "execution("           // Pointcut Designator
+           + "[접근제한자 패턴] "   // public
+           + "리턴타입 패턴"       // long
+           + "[패키지명, 클래스 경로 패턴]"          // com.nhnacademy.GreetingService
+           + "메소드명 패턴(파라미터 타입 패턴|..)"  // .greet(User, String)
+           + "[throws 예외 타입 패턴]"
+           +")"
+          )
+
+@Pointcut("execution(public boolean com.nhnacademy.edu.springframework.greeting.service.Greeter.sayHello(..))
+// ..은 인자가 무엇이든 상관없음을 의미
+----
+
+=== 포인트컷 - Pointcut Designator
+* 스프링 AOP에서 지원하는 포인트컷 지정자 (Pointcut Desginator)
+
+.execution
+* 메소드 실행 조인포인트와 매칭
+* 스프링 AOP 의 주요 포인트컷 지정자
+
+.within
+* 주어진 타입(클래스)으로 조인 포인트 범위를 제한
+
+.execution vs within
+* execution 은 메서드를 지칭하지만, within 은 클래스를 지칭한다.
+* 코드 비교
+----
+@Pointcut("execution(boolean com.nhnacademy.edu.springframework.greeting.service.Greeter.sayHello())")
+public void greeterPointCut(){}
+
+@Pointcut("within(com.nhnacademy.edu.springframework.greeting.service.Greeter)")
+public void greeterPointCut(){}
+----
+
+.this
+* 주어진 타입을 구현한 스프링 AOP Proxy 객체에 매칭
+* 보통 Proxy 객체를 Advice 파라미터에 바인딩하는 용도로 쓰인다.
+
+.target
+* 주어진 타입을 구현한 타겟 객체에 매칭
+* 보통 타겟 객체를 Advice 파라미터에 바인딩하는 용도로 쓰인다.
+
+=== 포인트컷 - 공통 포인트컷 공유
+* 대규모 시스템에서 공통적인 포인트컷을 정의하여 참조하는 방식을 사용하는 것이 유리합니다.
+* @Advice가 없어서 @Component가 없음
+* Pointcut 을 선언하고 Advice 에 Pointcut 을 호출해서 사용 가능
+* Advice에 Pointcut 표현식을 직접 넣어서 사용 가능
+
+.Client / Servant
+* Client = greetingService
+* Servant = greeter
+
+.@Around
+* 메소드 실행의 전, 후에 advice를 실행할 수 있는 기회를 제공합니다.
+* 심지어 대상 메소드가 실행하거나 하지 않도록 제어할 수도 있습니다.
+* Around Advice 는 Object 를 반환해야 하고 첫번째 인자는 ProceedingJoinPoint 이어야 합니다.
+* ProceedingJoinPoint 의 proceed() 를 호출하면 타겟메소드가 실행됩니다.
+* target method 를 호출하는 코드가 반드시 작성해야 한다.
+
+.JoinPoint 의 메소드
+* getArgs() : 타겟 메소드의 인자
+** 동적으로 뭔가를 하기에는 부족해서 밑에 advice에 파라미터 넘기기 참고
+* getThis() : 프록시 객체
+* getTarget() : 타겟 객체
+* getSignature() : 타겟 객체의 메소드 시그니쳐
+* toString() : 타겟 객체의 메소드 정보
+
+=== Advice에 파라미터 넘기기
+* args 포인트컷 지정자를 이용해서 Advice에 파라미터를 넘길 수 있습니다.
+----
+@Before("com.xyz.myapp.CommonPointcuts.dataAccessOperation() && args(account,..)")
+public void validateAccount(Account account) {
+    // ...
+}
+----
+* args(account,..) 표현식은 두가지 의미를 내포합니다.
+** 1개 이상의 파라미터를 받는 메소드 실행에 매칭, 첫번째 인자는 Account 클래스의 인스턴스 이어야 합니다.
+** Account 객체는 Advice의 account 파라미터에 바인딩합니다.
+
+* 포인트컷과 Advice 를 분리해서 선언하는 경우는 다음과 같이 설정할 수 있습니다.
+----
+@Pointcut("com.xyz.myapp.CommonPointcuts.dataAccessOperation() && args(account,..)")
+private void accountDataAccessOperation(Account account) {}
+
+@Before("accountDataAccessOperation(account)")
+public void validateAccount(Account account) {
+    // ...
+}
+----
+
+=== Advice - Custom Annotation 매칭
+* Annotation 을 기준으로 매칭한 경우의 예제는 다음과 같습니다.
+* Auditable.java 로 Annotation 을 작성합니다.
+----
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface Auditable {
+    AuditCode value();
+}
+----
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+RuntimeException을 상속하는 것들은 uncheckedException
+Spring에서는 RuntimeException을 대부분 사용

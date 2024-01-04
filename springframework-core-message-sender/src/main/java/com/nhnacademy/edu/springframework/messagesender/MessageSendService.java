@@ -19,7 +19,7 @@ public class MessageSendService {
     }
 
     @Autowired
-    public void setMessageSender(MessageSender emailMessageSender) {
-        this.messageSender = emailMessageSender;
+    public void setMessageSender(MessageSender smsMessageSender) {
+        this.messageSender = smsMessageSender;
     }
 }
