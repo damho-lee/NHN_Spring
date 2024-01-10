@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+</head>
+<body>
+<form method="post" th:action="@{/login}">
+    <p>
+        <span th:text="#{id}"></span>
+        <input type="text" name="id"><br/>
+    </p>
+    <p>
+        <span th:text="#{name}"></span>
+        <input type="text" name="name"><br/>
+    </p>
+    <input type="submit" th:value="#{login}"/>
+</form>
+</body>
+</html>
