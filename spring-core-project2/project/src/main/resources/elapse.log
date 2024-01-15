@@ -1,0 +1,64 @@
+18:03:31.408 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 99ms
+18:03:31.409 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 101ms
+18:03:33.148 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.findWaterBill 0ms
+18:03:33.153 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.service.BasicWaterBillService.billCalculate 6ms
+18:03:33.165 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.service.BasicReport.report 11ms
+18:03:33.972 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.findWaterBill 0ms
+18:03:33.973 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.service.BasicWaterBillService.billCalculate 1ms
+18:03:33.974 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.service.BasicReport.report 0ms
+18:03:34.860 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.findWaterBill 0ms
+18:03:34.861 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.service.BasicWaterBillService.billCalculate 1ms
+18:03:34.861 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.service.BasicReport.report 0ms
+18:20:41.326 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 95ms
+18:20:41.327 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 98ms
+18:20:43.903 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.findWaterBill 1ms
+18:20:43.906 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.service.BasicWaterBillService.billCalculate 5ms
+18:20:43.919 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.service.BasicReport.report 11ms
+18:38:08.408 [main] INFO  o.s.t.c.s.DefaultTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+18:38:08.410 [main] INFO  o.s.t.c.s.DefaultTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@6cc558c6, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@15713d56, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@63f259c3, org.springframework.test.context.support.DirtiesContextTestExecutionListener@26ceffa8, org.springframework.test.context.event.EventPublishingTestExecutionListener@600b90df]
+18:38:08.682 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 58ms
+18:38:08.682 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 59ms
+18:38:42.710 [main] INFO  o.s.t.c.s.DefaultTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+18:38:42.714 [main] INFO  o.s.t.c.s.DefaultTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@15713d56, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@63f259c3, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@26ceffa8, org.springframework.test.context.support.DirtiesContextTestExecutionListener@600b90df, org.springframework.test.context.event.EventPublishingTestExecutionListener@7c8c9a05]
+18:38:43.048 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 77ms
+18:38:43.049 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 78ms
+18:38:43.050 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.findWaterBill 0ms
+18:38:55.817 [main] INFO  o.s.t.c.s.DefaultTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+18:38:55.821 [main] INFO  o.s.t.c.s.DefaultTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@15713d56, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@63f259c3, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@26ceffa8, org.springframework.test.context.support.DirtiesContextTestExecutionListener@600b90df, org.springframework.test.context.event.EventPublishingTestExecutionListener@7c8c9a05]
+18:38:56.080 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 56ms
+18:38:56.080 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 57ms
+18:39:24.150 [main] INFO  o.s.t.c.s.DefaultTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+18:39:24.153 [main] INFO  o.s.t.c.s.DefaultTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@15713d56, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@63f259c3, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@26ceffa8, org.springframework.test.context.support.DirtiesContextTestExecutionListener@600b90df, org.springframework.test.context.event.EventPublishingTestExecutionListener@7c8c9a05]
+18:39:24.447 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 54ms
+18:39:24.448 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 54ms
+18:39:53.712 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 66ms
+18:39:53.713 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 68ms
+18:40:31.173 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 62ms
+18:40:31.174 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 64ms
+18:41:17.124 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 101ms
+18:41:17.125 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 103ms
+18:41:32.149 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 59ms
+18:41:32.150 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 61ms
+18:43:12.464 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 59ms
+18:43:12.465 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 61ms
+18:43:56.850 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 68ms
+18:43:56.852 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 70ms
+18:45:33.973 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 64ms
+18:45:33.974 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 65ms
+18:46:03.116 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 61ms
+18:46:03.117 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 62ms
+18:46:57.737 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 412ms
+18:46:57.744 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 425ms
+18:47:20.916 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 421ms
+18:47:20.923 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 436ms
+18:47:53.035 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 92ms
+18:47:53.036 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 94ms
+18:48:03.589 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 59ms
+18:48:03.590 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 61ms
+18:48:46.673 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.JsonDataParser.parse 427ms
+18:48:46.680 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 440ms
+18:52:13.910 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.parser.CsvDataParser.parse 4ms
+18:52:13.911 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.load 6ms
+18:52:17.655 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.repository.BasicTariffRepository.findWaterBill 1ms
+18:52:17.660 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.service.BasicWaterBillService.billCalculate 6ms
+18:52:17.671 [main] INFO  c.n.e.s.aspect.LoggingAspect - com.nhnacademy.edu.springframework.service.BasicReport.report 10ms

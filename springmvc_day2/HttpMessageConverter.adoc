@@ -1,0 +1,428 @@
+= HttpMessageConverter
+
+== HttpMessageConverter
+
+=== HttpMessageConverter
+* 자바 객체와 Http 요쳥 / 응답 body를 변환하는 역할
+
+=== HttpMessageConverter interface
+----
+public interface HttpMessageConverter<T> {
+  boolean canRead(Class<?> clazz, @Nullable MediaType mediaType);
+
+  boolean canWrite(Class<?> clazz, @Nullable MediaType mediaType);
+
+  List<MediaType> getSupportedMediaTypes();
+
+  T read(Class<? extends T> clazz, HttpInputMessage inputMessage) /*..*/;
+
+  void write(T t, @Nullable MediaType contentType, HttpOutputMessage outputMessage) /*..*/;
+}
+----
+* canRead : deserialization 가능 여부 판단
+* canWrite : serialization 가능 여부 판단
+
+=== @EnableWebMvc
+* WebMvcConfigurationSupport 에서 default HttpMessageConverter를 제공
+----
+public class WebMvcConfigurationSupport /*..*/ {
+    // ...
+
+  protected final void addDefaultHttpMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
+    messageConverters.add(new ByteArrayHttpMessageConverter());
+    messageConverters.add(new StringHttpMessageConverter());
+    messageConverters.add(new ResourceHttpMessageConverter());
+    messageConverters.add(new ResourceRegionHttpMessageConverter());
+
+    // ...
+  }
+}
+----
+
+=== @RestController
+* @RestController 를 사용하면 return 으로 String을 return 하더라도 url로 사용되는 것이 아니라 String이 직렬화 되어 화면에 String data가 찍힘
+
+=== ResponseEntity
+* 사용 이유 :
+** content type, header, etag 추가 등이 편리하고 가독성이 좋음
+
+== Spring MVC Components
+
+=== Spring MVC Components Overview
+
+.Spring MVC Components
+* HandlerMapping
+* HandlerAdapter
+* HandlerExceptionResolver
+* RequestToViewNameTranslator
+* ViewResolver
+* LocaleResolver
+* LocaleContextResolver
+* ThemeResolver
+* MultipartResolver
+* FlashMapManager
+
+=== Handler 란?
+.Handler
+* Controller
+* HttpRequestHandler
+
+.Handler == Controller
+* Handler는 그냥 Controller다라고 생각하면 무방함
+
+=== HandlerMapping
+
+* 서버로 들어온 요청을 어느 핸들러로 전달할 지 결정하는 역할
+* BeanNameUrlHandlerMapping
+** Bean Name + Url + HandlerMapping
+* SimpleUrlHandlerMapping
+** Simple Url + HandlerMapping
+* RequestMappingHandlerMapping
+** @RequestMapping + HandlerMapping
+* "SomeThing" + HandlerMapping
+
+=== HandlerAdapter
+
+* DispatcherServlet과 실제 핸들러 구현 사이를 이어주는 Object Adapter 역할
+* HttpRequestHandlerAdapter
+** HttpRequestHandler + HandlerAdapter
+* SimpleControllerHandlerAdapter
+** Simple Controller + HandlerAdapter
+* RequestMappingHandlerAdapter
+** @RequestMapping + HandlerAdapter
+* 위 2개는 잘 사용 하지 않음
+
+=== ViewController / RedirectViewController
+
+* 설정
+
+----
+public class WebConfig implements WebMvcConfigurer {
+// ...
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("index");
+        registry.addRedirectViewController("/this-is-home", "/");
+    }
+}
+----
+
+. HandlerMapping / HandlerAdapter
+* 어떤 URL일 때 어떤 view로 rendering 하라(또는 redirct 하라)는 정보를 Map 에 저장해서 사용
+** HandlerMapping → SimpleUrlHandlerMapping 사용
+* ViewController, RedirectViewController는 모두 ParameterizableViewController 라는 구현 클래스를 사용
+** ParameterizableViewController는 AbstractController라는 추상 클래스를 상속받아 구현
+*** HandlerAdapter → SimpleControllerHandlerAdapter 사용
+
+=== ViewController 와 Controller
+* ViewController는 @RequestMapping이 달려있으면 해당 url을 mapping하지 못한다.
+* Note: If an @RequestMapping method is mapped to a URL for any HTTP method then a view controller cannot handle the same URL. For this reason it is recommended to avoid splitting URL handling across an annotated controller and a view controller.
+
+== ViewResolver
+
+=== 문자열 기반의 view 이름을 토대로 실제 View 구현을 결정하는 역할
+* InternalResourceViewResolver
+* VelocityViewResolver
+* FreemarkerViewResolver
+* ThymeleafViewResolver
+* ...
+** 요즘 Thymeleaf를 자주 사용함
+
+=== ViewResolver 관련 Components
+
+==== LocaleResolver / LocaleContextResolver
+
+* view rendering 시 국제화 지원을 위한 Locale 과 Timezone 을 결정하는 역할
+* AcceptHeaderLocaleResolver
+* CookieLocaleResolver
+* SessionLocaleResolver
+
+==== ThemeResolver
+
+* view rendering 시 어떤 테마를 사용할 지 결정하는 역할
+* CookieThemeResolver
+* FixedThemeResolver
+* SessionThemeResolver
+
+==== RequestToViewNameTranslator
+
+핸들러가 아무것도 리턴하지 않았을 때 view 이름을 결정하는 역할
+
+=== HandlerExceptionResolver
+
+==== 요청 처리 과정에서 발생하는 예외를 제어하고자 할 때 사용
+* DefaultHandlerExceptionResolver
+** 표준 Srping 예외를 결정하고 예외에 해당하는 HTTP 상태 코드를 응답
+
+=== 기타
+
+==== MultipartResolver
+
+* multipart 요청을 처리하는 구현을 결정하는 역할
+* CommonsMultipartResolver
+* StandardServletMultipartResolver
+** Servlet 3.0 API 기반
+
+==== FlashMapManager
+
+* redirect 와 같이 하나의 요청에서 다른 요청으로 속성 값을 전달하는데 FlashMap 을 사용할 수 있는 mechanism 을 제공
+* redirect 가 너무 길어지거나 한 번 호출하면 사라짐
+
+=== HandlerInterceptor
+
+==== HandlerInterceptor
+* Servlet Filter와 유사하게
+* DispatcherServlet이 Controller를 호출하기 전/후에
+* 요청 및 응답을 참조, 가공할 수 있는 일종의 필터 역할
+
+.HandlerInterceptor Interface
+----
+public interface HandlerInterceptor {
+  default boolean preHandle(HttpServletRequest req, HttpServletResponse resp, Object handler) /*..*/ {
+    return true;
+  }
+
+  default void postHandle(HttpServletRequest req, HttpServletResponse resp, Object handler,
+                          ModelAndView mav) /*..*/ {
+
+
+  default void afterCompletion(HttpServletRequest req, HttpServletResponse resp, Object handler,
+                          Exception ex) /*..*/ {
+  }
+}
+----
+* preHandle : controller 실행 전
+* postHandle : controller 성공적으로 실행 후
+* afterCompletion : controller 가 성공하든 말든 실행 후
+
+=== DispatcherServlet 의 HandlerExecutionChain 실행
+
+.HandlerExecutionChain
+* 요청을 처리할 하나의 handler(Controller)와 이 요청에 적용될 여러 interceptor 들을 아우르는 요청 처리 객체
+----
+public class HandlerExecutionChain {
+  private final Object handler;
+  private final List<HandlerInterceptor> interceptorList = new ArrayList<>();
+
+  // ...
+}
+----
+
+.HandlerExecutionChain 실행
+----
+HandlerExecutionChain mappedHandler = /*..*/;
+// ...
+
+if (!mappedHandler.applyPreHandle(processedRequest, response)) {
+    return;
+}
+
+// Actually invoke the handler.
+mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+
+// ...
+
+mappedHandler.applyPostHandle(processedRequest, response, mv);
+----
+
+=== Servlet Filter vs HandlerInterceptor
+
+==== 실행 시점이 다르다
+
+* Filter: DispatcherServlet 실행 전/후에 실행
+* HandlerInterceptor: DispatcherServlet 실행 이후에 Controller 실행 전/후에 실행
+
+
+==== ApplicationContext 범위가 다르다
+
+* Filter: Root ApplicationContext 에 등록/관리
+* Filter 는 Servlet ApplicationContext(MVC 의 View 나 @ExceptionHandler)를 이용할 수 없다
+* HandlerInterceptor: Servlet ApplicationContext 에 등록/관리
+
+=== HandlerInterceptor 설정
+
+----
+public class WebConfig implements WebMvcConfigurer {
+    // ...
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LocaleChangeInterceptor());
+    }
+}
+----
+
+==== HandlerInterceptor 를 통한 다국어 처리
+
+* LocaleResolver
+* HandlerInterceptor - LocaleChangeInterceptor
+* MessageSource
+* JSTL tag library - formatting tag library (<fmt:message>)
+
+=== MessageSource
+
+==== MessageSource Interface
+
+* ApplicationContext's i18n support
+----
+public interface MessageSource {
+  String getMessage(String code, Object[] args, defaultMessage, Locale locale);
+  String getMessage(String code, Object[] args, Locale locale) /*..*/;
+  String getMessage(MessageSourceResolvable resolvable, Locale locale) /*..*/;
+}
+----
+
+==== MessageSource type Bean 등록
+
+* MessageSource 라는 이름의 MessageSource 타입의 Bean을 등록해두면
+** Spring framework에서 다국어 처리 시 이 Bean을 활용
+----
+@Bean
+public MessageSource messageSource() {
+    ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+    messageSource.setBasename("message");
+//        messageSource.setBasenames("message", "error");
+
+    return messageSource;
+}
+----
+
+==== Controller 의 수행 시간을 측정하는 interceptor 추가 하기
+* 객체가 1개이기 때문에 preHandle() 이 여러번 호출되는 경우 global 변수를 덮어 쓰기 global 변수를 사용하는 것은 좋지 않다.
+* HttpServletRequest 사용하는 것이 좋음
+* ThreadLocal 을 사용해도 좋음 단, afterCompletion 에서 반환 꼭 해줘야 함.
+
+=== File Upload
+
+==== File Upload
+* Servlet 에서 Servlet 3.0 API를 이용한 File Upload
+
+==== Servlet 3.0 API (Servlet Version)
+----
+@MultipartConfig(
+    location = "/tmp/",
+    maxFileSize = -1L,
+    maxRequestSize = -1L,
+    fileSizeThreshold = 1024
+)
+@Slf4j
+public class FileUploadServlet extends HttpServlet {
+    private static final String CONTENT_DISPOSITION = "Content-Disposition";
+    private static final String UPLOAD_DIR = "/Users/user/Downloads";
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+        throws ServletException, IOException {
+        for (Part part : req.getParts()) {
+            String contentDisposition = part.getHeader(CONTENT_DISPOSITION);
+
+            if (contentDisposition.contains("filename=")) {
+                String fileName = extractFileName(contentDisposition);
+
+                if (part.getSize() > 0) {
+                    part.write(UPLOAD_DIR + File.separator + fileName);
+                    part.delete();
+                }
+            } else {
+                String formValue = req.getParameter(part.getName());
+                log.error("{}={}", part.getName(), formValue);
+            }
+        }
+    }
+
+    private String extractFileName(String contentDisposition) {
+        for (String token : contentDisposition.split(";")) {
+            if (token.trim().startsWith("filename")) {
+                String fileName = token.substring(token.indexOf("=") + 1).trim().replace("\"", "");
+                int index = fileName.lastIndexOf(File.separator);
+                return fileName.substring(index + 1);
+            }
+        }
+
+        return null;
+    }
+}
+----
+
+==== Spring MVC 에서의 File Upload
+
+.MultipartResolver 를 이용
+* 멀티 파트 요청을 처리하는 구현을 결정하는 역할
+
+.MultipartResolver 종류
+* StandardServletMultipartResolver
+* CommonsMultipartResolver
+
+.MultipartResolver
+* StandardServletMultipartResolver
+
+==== commons-upload 를 이용한 File Upload
+
+.MultipartResolver
+* CommonsMultipartResolver
+
+==== Servlet 을 사용하다가 commons-upload 를 사용하려면 controller 는 수정 안하고 설정만 바꿔주면 됨
+
+== View
+
+=== View Resolver
+
+==== ViewResolver
+
+* Spring MVC 에서는 view 이름을 문자열로 관리
+* 문자열 기반의 view 이름을 토대로 실제 View 구현을 결정하는 역할
+
+==== ViewResolver 의 종류 - View Template Engine 에 따라
+* InternalResourceViewResolver - JSP 사용
+* VelocityViewResolver - velocity https://velocity.apache.org/
+* FreemarkerViewResolver - freemarker https://freemarker.apache.org/
+* ThymeleafViewResolver - thymeleaf https://www.thymeleaf.org/
+* ...
+
+=== Thymeleaf
+
+==== Thymeleaf
+* HTML5 기반의 view template engine
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''

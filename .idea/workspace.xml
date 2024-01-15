@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a2aff0fd-3750-494a-a5f5-ed4165fe514c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/Base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/FilterInitializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/WebAppInitializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/config/RootConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/config/WebConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/controller/ControllerBase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/controller/StudentController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/controller/StudentRegisterController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/controller/WebControllerAdvice.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/domain/Student.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/domain/StudentHideScoreRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/domain/StudentRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/exception/StudentNotFoundException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/exception/ValidationFailedException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/repository/StudentRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/java/com/nhnacademy/springmvc/repository/StudentRepositoryImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/webapp/WEB-INF/view/error.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/webapp/WEB-INF/view/studentModify.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/webapp/WEB-INF/view/studentRegister.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/report/src/main/webapp/WEB-INF/view/studentView.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/springmvc2/SpringMVC.adoc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/springmvc2/src/main/java/com/nhnacademy/springmvc/Base.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/springmvc2/src/main/java/com/nhnacademy/springmvc/WebAppInitializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/springmvc2/src/main/java/com/nhnacademy/springmvc/config/RootConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/springmvc2/src/main/java/com/nhnacademy/springmvc/config/WebConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/springmvc2/src/main/java/com/nhnacademy/springmvc/controller/ControllerBase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/springmvc2/src/main/java/com/nhnacademy/springmvc/controller/NewController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SpringMVC2/springmvc2/src/main/webapp/WEB-INF/view/now.jsp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project1/springframework-project-final/src/main/java/com/nhnacademy/edu/springframework/project/aspect/LoggingAspect.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/aspect/LoggingAspect.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/config/JavaConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/domain/ResultWaterBill.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/domain/WaterBill.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/parser/CsvDataParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/parser/DataParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/parser/JsonDataParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/repository/BasicTariffRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/repository/TariffRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/service/BasicReport.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/service/BasicWaterBillService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/service/Report.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/java/com/nhnacademy/edu/springframework/service/WaterBillService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/resources/data/Tariff_20220331.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/resources/data/Tariff_20220331.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/resources/elapse.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/main/resources/logback.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/test/java/com/nhnacademy/edu/springframework/parser/CsvDataParserTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/test/java/com/nhnacademy/edu/springframework/parser/JsonDataParserTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/test/java/com/nhnacademy/edu/springframework/repository/TariffRepositoryIntegratedTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/test/java/com/nhnacademy/edu/springframework/repository/TariffRepositoryUnitTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/test/java/com/nhnacademy/edu/springframework/service/WaterBillServiceIntegratedTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/test/resources/data/Tariff_Test.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/spring-core-project2/project/src/test/resources/data/Tariff_Test.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springframework-core-message-sender/Spring Mvc.adoc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springframework-core-message-sender/src/main/java/com/nhnacademy/edu/springframework/messagesender/DoorayMessageSender.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/java/com/nhnacademy/springmvc/controller/IndexController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/java/com/nhnacademy/springmvc/controller/LoginController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/java/com/nhnacademy/springmvc/interceptor/LocaleHandlerInterceptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/java/com/nhnacademy/springmvc/interceptor/LoginCheckInterceptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/resources/message.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/resources/message_en.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/resources/message_ko.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/webapp/WEB-INF/view/error.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/webapp/WEB-INF/view/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/webapp/WEB-INF/view/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/webapp/WEB-INF/view/studentModify.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/webapp/WEB-INF/view/studentRegister.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc-report-2/src/main/webapp/WEB-INF/view/studentView.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/springmvc_day2/HttpMessageConverter.adoc" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2aQ9UtC76Ysc0ZxLEHmWMDkgthG" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/damo/Study/NHN_Spring",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "settings.editor.selected.configurable": "File.Encoding",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a2aff0fd-3750-494a-a5f5-ed4165fe514c" name="Changes" comment="" />
+      <created>1704239954319</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1704239954319</updated>
+      <workItem from="1704239955498" duration="186000" />
+      <workItem from="1704803306584" duration="521000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

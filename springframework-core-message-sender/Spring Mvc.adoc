@@ -1,0 +1,16 @@
+= MVC Pattern
+
+* MVC 로 나눈 이유 :
+** 유지보수 용이
+** 협업 용이
+
+== Front Controller Pattern
+* 쇼핑몰 과제
+
+== Spring MVC 에서의 Front Controller
+
+.DispatcherServlet
+* Spring MVC Framework의 중심이 되는 Servlet
+* Controller로 향하는 모든 웹 요청의 entry point
+* Front Controller 디자인 패턴의 표현
+* Servlet 엔진 위에서 동작
