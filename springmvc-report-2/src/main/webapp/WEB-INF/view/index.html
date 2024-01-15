@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<head lang="ko">
+    <title>
+        메인 페이지
+    </title>
+</head>
+<body>
+<p>
+    <span th:text="#{id}"></span>
+    <span th:text="${session.loginId}"></span>
+</p>
+<form method="post" th:action="@{/logout}">
+    <input type="submit" th:value="#{logout}"/>
+</form>
+</body>

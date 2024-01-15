@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <title>학생 정보 등록</title>
+</head>
+<body>
+<form method="post" th:action="@{/student/register}" >
+    <p>
+        <label for="name" th:text="#{name}"></label>
+        <input type="text" id="name" name="name"/><br/>
+    </p>
+    <p>
+        <label for="email" th:text="#{email}"></label>
+        <input type="text" id="email" name="email"/><br/>
+    </p>
+    <p>
+        <label for="score" th:text="#{score}"></label>
+        <input type="text" id="score" name="score" /><br/>
+    </p>
+    <p>
+        <label for="comment" th:text="#{comment}"></label>
+        <textarea id="comment" name="comment" rows="10" cols="80"></textarea><br/>
+    </p>
+    <input type="submit"/>
+</form>
+</body>
+</html>

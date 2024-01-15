@@ -1,0 +1,25 @@
+POST http://localhost:8080/students HTTP/1.1
+Content-type: application/json
+
+{
+  "name": "유용준",
+  "email": "dbdydwns@naver.com",
+  "score": 90,
+  "comment": "찡찡이"
+}
+
+###
+
+GET http://localhost:8080/students/1 HTTP/1.1
+
+###
+
+PUT http://localhost:8080/students/2 HTTP/1.1
+Content-type: application/json
+
+{
+  "name": "유용준",
+  "email": "dbdydwns@naver.com",
+  "score": 50,
+  "comment": "찡찡이"
+}
