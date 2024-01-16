@@ -343,6 +343,291 @@ image::images/Entity_Life_Cycle.png[]
 * 대량으로 데이터를 처리할 때 1차 캐시 역할 때문에 메모리를 많이 잡아먹는다
 * 잘못하면 프로그램 죽음
 
+== 2일차
+
+=== 연관관계 맵핑
+
+==== 데이터베이스 테이블 간의 관계(relationship)
+
+.데이터베이스 정규화
+* 정규화는 중복 데이터로 인해 발생하는 데이터 불일치 현상을 해소하는 과정
+
+==== 연관 관계(association)
+* 데이터베이스 테이블 간의 관계(relationship)를 Entity 클래스의 속성(attribute)으로 모델링
+* 데이터베이스 테이블은 외래 키(FK)로 JOIN을 이용해서 관계 테이블을 참조
+** 객체는 참조를 사용해서 연관된 객체를 참조
+* ERD 에 있는 연관 관계를 다 할 필요는 없음. 필요 없으면 안해도 무방.
+
+=== 연관 관계
+
+==== 외래 key(FK) 맵핑
+* @JoinColumn : 외래 키 맵핑
+* @JoinColumns : 복합 외래 키 맵핑
+
+==== Member Entity
+----
+@Entity
+@Table(name="Members")
+public class Member {
+    @Id
+    @Column(name = "member_id")
+    private String id;
+
+    @Column(name = "user_name")
+    private String userName;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "team_id")
+    private Team team;
+}
+----
+
+==== 다중성
+* @OneToOne
+* @OneToMany
+* @ManyToOne
+* (@ManyToMany)
+** ManyToMany는 없다고 생각하라는 의미로 ()를 넣음. 현업에서는 다대다로 설계를 하는 경우 다른 컬럼들이 계속 생겨남(생성일, 수정일, 카운트 등등)
+** 따라서 차라리 다대일, 일대다로 뜯어서 설계하는게 낫다.
+
+=== Fetch 전략 (fetch)
+* JPA가 하나의 Entity를 가져올 때 연관관계에 있는 Entity들을 어떻게 가져올 것인지에 대한 설정
+
+==== Fetch 전략
+* FetchType.EAGER (즉시 로딩) : Member 객체를 가져올 때 Team 객체도 같이 가져옴. 쿼리 1번 날아감(join query).
+* FetchType.LAZY (지연 로딩) : Team 멤버 변수를 참조할 때 쿼리를 날려 가져옴. 즉 쿼리 2번 날아감.
+
+==== 다중성과 기본 Fetch 전략
+* *-ToOne (@OneToOne, @ManyToOne ) : FetchType.EAGER
+* *-ToMany (@OneToMany, @ManyToMany) : FetchType.LAZY
+
+=== 영속성 전이 (Cascade)
+
+==== 영속성 전이
+* Entity의 영속성 상태 변화를 연관된 Entity에도 함께 적용
+* 연관관계의 다중성 (Multiplicity) 지정 시 cascade 속성으로 설정
+----
+@OneToOne(cascade = CascadeType.PERSIST)
+@OneToMany(cascade = CascadeType.ALL)
+@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+----
+
+=== 연관관계의 방향성
+* 단방향(unidirectional)
+* 양방향(bidirectional)
+
+==== 양방향 연관 관계
+* 관계의 주인(owner)
+** 연관 관계의 주인은 외래 키(FK)가 있는 곳
+** 연관 관계의 주인이 아닌 경우, mappedBy 속성으로 연관 관계의 주인을 지정
+
+==== 예제
+* 양방향(bidirectional) 연관 관계
+** 관계의 주인(owner): 외래 키(FK)가 있는 곳
+*** Member
+** 관계의 주인이 아닌 경우: mappedBy 속성으로 연관 관계의 주인을 지정
+*** Team
+
+.Member Entity
+----
+@Entity
+@Table(name="Members")
+public class Member {
+    @Id
+    @Column(name = "member_id")
+    private String id;
+
+    @Column(name = "user_name")
+    private String userName;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "team_id")
+    private Team team;
+}
+----
+
+.Team Entity
+----
+@Entity
+@Table(name = "Teams")
+public class Team {
+    @Id
+    @Column(name = "team_id")
+    private String id;
+
+    @Column(name = "team_name")
+    private String name;
+
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER) // mappedBy = "관계의 주인 테이블의 외래키 속성명";
+    private List<Member> members;
+}
+----
+
+=== 단방향 vs 양방향
+* 단방향일 때는 JoinColumn 을 둘 중 아무데나 써도 상관 없으나 양방향으로 하고자 할 때는 fk 의 주인에 JoinColumn 을 작성해야 함
+==== 단방향 맵핑만으로 연관관계 맵핑은 이미 완료
+* JPA 연관관계도 내부적으로 FK 참조를 기반으로 구현하므로 본질적으로 참조의 방향은 단방향
+
+==== 단방향에 비해 양방향은 복잡하고 양방향 연관관계를 맵핑하려면 객체에서 양쪽 방향을 모두 관리해야 함
+* 물리적으로 존재하지 않는 연관관계를 처리하기 위해 mappedBy 속성을 통해 관계의 주인을 정해야 함
+
+==== 단방향을 양방향으로 만들면 반대 방향으로의 객체 그래프 탐색 가능
+* 우선적으로는 단방향 맵핑을 사용하고 반대 방향으로의 객체 그래프 탐색 기능이 필요할 때 양방향을 사용
+
+=== 단방향 1:1 관계
+* ERD 에서 foreign key 가 있는 곳에 JoinColumn 어노테이션
+* 양방향으로 하고 싶으면 foreign key 없는 곳에 mappedBy 속성 달기
+
+=== 1:1 식별 관계
+* 주 테이블의 primary key 를 보조 테이블에서 primary key 이자 foreign key 로 사용.
+* 외래키 가지고 있는 곳에서 @MapsId
+** @MapsId = primary key 가 foreign key 이다. 즉, 같다.
+
+=== 단방향 일대다 관계
+
+==== 단점
+* 다른 테이블에 외래 키가 있으면 연관관계 처리를 위해 추가적인 UPDATE 쿼리 실행
+
+==== 해결
+* 단방향 일대다(1:N) 관계보다는 양방향 맵핑을 사용하자
+** 어지간하면 단방향을 사용하지만 일대다 경우에는 양방향을 사용하자
+
+=== 양방향 일대다 관계
+
+=== Repository
+
+==== Repository의 정의
+* 도메인 객체에 접근하는 컬렉션과 비슷한 인터페이스를 사용해 도메인과 데이터 맵핑 계층 사이를 중재(mediate)
+** 마틴 파울러, P of EAA
+* a mechanism for encapsulating storage, retrieval, and search behavior which emulates a collection of objects
+** 에릭 에반스, DDD
+
+==== 주의할 점
+* Repository는 JPA의 개념이 아니고, Spring Framework가 제공해주는 것임.
+
+
+=== Spring Data Repository
+* data access layer 구현을 위해 반복해서 작성했던, 유사한 코드를 줄일 수 있는 추상화 제공
+----
+// EntityManager를 통해 entity를 저장, 수정, 삭제, 조회
+// create, update, delete, and look up entities through EntityManager
+Item entity1 = new ItemEntity();
+entity1.setItemName("peach");
+entity1.setPrice(135L);
+entityManager.persist(entity1);
+
+Item entity2 = entityManager.find(ItemEntity.class, entity1.getItemId());
+entity2.setPrice(235L);
+entityManager.merge(entity2);
+
+// JPQL, Criteria API를 이용해서 복잡한 쿼리 수행
+// complex query can be executed by using JPQL, Criteria API
+String jpql = "select item from Item item where item.itemName like '%peach%'";
+List<ItemEntity> entites = entityManager.createQuery(jpql, ItemEntity.class)
+                                        .getResultList();
+----
+
+=== Repository 설정
+
+* EntityManager 가 SimpleJpaRepository 에 추상화 되어 있음. 따라서 쿼리가 나감
+* Ex.) ItemRepository 인터페이스
+* JpaRepository interface 상속
+* EntityManager 는 persist 와 merge 로 나눠져있지만 JpaRepository 는 save 하나
+----
+public interface ItemRepository extends JpaRepository<Item, Long> {
+}
+----
+
+=== @Repository와 Spring Data Repository의 차이점
+
+==== @Repository
+* org.springframework.stereotype.Repository
+* Spring Stereotype annotation
+** Ex.) @Controller, @Service, @Repository, @Component
+* @ComponentScan 설정에 따라 classpath scanning을 통해 빈 자동 감지 및 등록
+* 다양한 데이터 액세스 기술마다 다른 예외 추상화 제공
+** DataAccessException, PersistenceExceptionTranslator
+
+==== Spring Data Repository
+* org.springframework.data.repository
+* @EnableJpaRepositories 설정에 따라 Repository interface 자동 감지 및 동적으로 구현 생성해서 Bean으로 등록
+* cf.) @NoRepositoryBean
+** Spring Data Repository bean으로 등록하고 싶지 않은 중간 단계 interface에 적용
+
+=== 메서드 이름으로 쿼리 생성
+* Spring Data JPA에서 제공하는 기능으로 이름 규칙에 맞춰 interface에 선언하면 쿼리 생성
+* cf.)
+** https://docs.spring.io/spring-data/jpa/reference/repositories/query-keywords-reference.html#appendix.query.method.subject
+** https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html#jpa.query-methods.query-creation
+
+.예제
+----
+public interface ItemRepository {
+    // select * from Items where item_name like '{itemName}'
+    List<Item> findByItemNameLike(String itemName);
+
+    // select item_id from Items
+    // where item_name = '{itemName}'
+    // and price = {price} limit 1
+    boolean existsByItemNameAndPrice(String itemName, Long price);
+
+    // select count(*) from Items where item_name like '{itemName}'
+    int countByItemNameLike(String itemName);
+
+    // delete from Items where price between {price1} and {price2}
+    void deleteByPriceBetween(long price1, long price2);
+}
+
+----
+
+=== 복잡한 쿼리 작성
+
+==== JPA에서 제공하는 객체 지향 쿼리
+* JPQL: 엔티티 객체를 조회하는 객체 지향 쿼리
+* Criteria API: JPQL을 생성하는 빌더 클래스
+
+==== third party library를 이용하는 방법
+* Querydsl
+* jOOQ
+* …
+
+=== JPQL vs Criteria API
+
+=== JPQL
+* SQL을 추상화해서 특정 DBMS에 의존적이지 않은 객체지향 쿼리
+* 문제 : 결국은 SQL이라는 점
+** 문자 기반 쿼리이다보니 컴파일 타임에 오류를 발견할 수 없다
+----
+SELECT DISTINCT post
+FROM Post post
+JOIN post.postUsers postUser
+JOIN postUser.projectMember projectMember
+JOIN projectMember.member member
+WHERE member.name = 'dongmyo'
+----
+
+== 3일차
+
+=== Repository 고급
+==== @Query
+* JPQL 쿼리나 Native 쿼리를 직접 수행
+----
+@Query("select i from Item i where i.price > ?1")
+List<Item> getItemsHavingPriceAtLeast(long price);
+
+// true 일 경우 db 의 쿼리 사용 명시
+// nativeQuery 를 쓰면 나중에 db 를 바꾸기 쉽지 않음
+@Query(value = "select * from Items where price > ?1", nativeQuery = true)
+List<Item> getItemsHavingPriceAtLeast2(long price);
+----
+
+==== @Modifying
+* @Query 를 통해 insert, update, delete 쿼리를 수행할 경우 붙여줘야 함
+----
+@Modifying
+@Query("update Item i set i.itemName = :itemName where i.itemId = :itemId")
+int updateItemName(@Param("itemId") Long itemId, @Param("itemName")String itemName);
+----
 
 
 
@@ -350,10 +635,11 @@ image::images/Entity_Life_Cycle.png[]
 
 
 
-'''''
+
+== 더보기
 * MyBatis 를 많이 사용함
 * Spring Data JDBC, JDBC Template
-* 김영한님이 쓰신 JPA 책 읽기
+* JPA 책 추천 : 김영한님이 쓰신 JPA 책
 ** 책 처음부터는 hibernate 설정이 있고 Spring 은 이를 추상화해놓음
 * Gradle 은 스크립트로 되어 있음
 * Maven 은 플러그인으로 되어 있음
@@ -373,3 +659,6 @@ image::images/Entity_Life_Cycle.png[]
 * assertThat(ReflectionTestUtils.invokeGetterMethod(order1, "orderId")).isEqualTo(1001L);
 ** Reflection 을 이용해 아직 만들지 않은 메서드나 private 메서드를 테스트할 수 있음
 * Hibernate 는 insert / update / delete 를 각각 모아서 차례대로 실행함
+* DDD : Domain Driven Design
+* 하나의 DB 테이블에 여러 개의 클래스를 매핑하기 -> 가능
+* 하나의 컬럼에 여러 개의 필드를 매핑 -> 불가능. 단, 두 개 이상의 필드를 사용하는 경우 insertable, updatable = false 로 해야함
