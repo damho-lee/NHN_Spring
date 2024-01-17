@@ -491,6 +491,7 @@ public class Team {
 ==== 해결
 * 단방향 일대다(1:N) 관계보다는 양방향 맵핑을 사용하자
 ** 어지간하면 단방향을 사용하지만 일대다 경우에는 양방향을 사용하자
+*** 불필요한 update query 가 나가는 것을 방지
 
 === 양방향 일대다 관계
 
@@ -621,6 +622,18 @@ List<Item> getItemsHavingPriceAtLeast(long price);
 List<Item> getItemsHavingPriceAtLeast2(long price);
 ----
 
+==== Parameter 넘기는 방법 2가지
+
+----
+@Query("select o from Order o where o.orderDate > ?1")
+    List<Order> getOrdersHavingOrderDateAfter(Date orderDate);
+
+or
+
+@Query("select o from Order o where o.orderDate > :orderDate")
+    List<Order> getOrdersHavingOrderDateAfter(@Param("orderDate") Date orderDate);
+----
+
 ==== @Modifying
 * @Query 를 통해 insert, update, delete 쿼리를 수행할 경우 붙여줘야 함
 ----
@@ -628,6 +641,572 @@ List<Item> getItemsHavingPriceAtLeast2(long price);
 @Query("update Item i set i.itemName = :itemName where i.itemId = :itemId")
 int updateItemName(@Param("itemId") Long itemId, @Param("itemName")String itemName);
 ----
+
+=== DTO Projection
+
+==== DTO Projection 이란
+* Repository 메서드가 Entity를 반환하는 것이 아니라 원하는 필드만 뽑아서 DTO(Data Transfer Object)로 반환하는 것
+
+==== Dto Projection 방법
+* Interface 기반 Projection(추천)
+** 유연한 사용 가능, 확장성, 중첩 구조 가능
+* Class 기반 (DTO) Projection
+* Dynamic Projection
+
+==== 중첩 구조
+
+* Entity
+----
+@Getter
+@Setter
+@Entity
+@Table(name = "Members")
+public class Member implements Persistable<String> { // Persistable 을 implements 하고 setShouldBeNew(true)
+                                                     // select query 후 insert query 를 하던 것이
+                                                     // insert 만 함
+    @Id
+    @Column(name = "member_id")
+    private String id;
+
+    @Column(name = "user_name")
+    private String userName;
+
+    @OneToOne(mappedBy = "member")
+    private Locker locker;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+    private List<MemberDetail> memberDetails;
+
+    @Transient
+    boolean shouldBeNew = false;
+
+    @Override
+    public boolean isNew() {
+        return shouldBeNew || Objects.isNull(id);
+    }
+
+}
+----
+* Repository
+----
+public interface MemberRepository extends JpaRepository<Member, String> {
+    // TODO #2: Entity가 아니라 Dto를 반환하는 repository method
+    MemberNameOnly queryById(String id);
+
+    // TODO #5: 중첩구조를 가지는 Dto를 반환하는 repository method
+    // select user_name, md.type, md.description
+    // from Members m left join MemberDetails md
+    // on m.id = md.id
+    // where user_name = {}
+    List<MemberDto> findByUserName(String userName);
+
+}
+----
+
+* DTO
+
+----
+public interface MemberDto {
+    String getUserName();
+    List<MemberDetailDto> getMemberDetails();
+
+    interface MemberDetailDto { // 중첩 구조를 가지는 경우 모든 속성을 다 가져온 후 선언된 속성만 다시 뽑음(한계)
+        String getType();
+        String getDescription();
+    }
+
+}
+----
+
+* 실제 쿼리
+* EntityManager 에서는 persist 와 merge 가 나눠져 있지만 save 는 두 개의 역할을 다 하기 때문에 select 를 해서 있으면 update 없으면 insert
+* 따라서 saveAndFlush 를 해도 select 후 insert 구문이 나옴
+----
+2024/01/17 09:45:46.233 [main] DEBUG org.hibernate.SQL -
+    /* load com.nhnacademy.springjpa.entity.Member */ select
+        member0_."member_id" as member_i1_7_0_,
+        member0_."user_name" as user_nam2_7_0_
+    from
+        "Members" member0_
+    where
+        member0_."member_id"=?
+2024/01/17 09:45:46.238 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [1] as [VARCHAR] - [member1]
+2024/01/17 09:45:46.252 [main] DEBUG org.hibernate.SQL -
+    /* insert com.nhnacademy.springjpa.entity.Member
+        */ insert
+        into
+            "Members"
+            ("user_name", "member_id")
+        values
+            (?, ?)
+2024/01/17 09:45:46.253 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [1] as [VARCHAR] - [nhn]
+2024/01/17 09:45:46.253 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [2] as [VARCHAR] - [member1]
+----
+
+* persistable implements 하고 setShouldBeNew(true) 인 경우
+----
+2024/01/17 09:56:15.955 [main] DEBUG org.hibernate.SQL -
+    /* insert com.nhnacademy.springjpa.entity.Member
+        */ insert
+        into
+            "Members"
+            ("user_name", "member_id")
+        values
+            (?, ?)
+2024/01/17 09:56:15.959 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [1] as [VARCHAR] - [nhn]
+2024/01/17 09:56:15.959 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [2] as [VARCHAR] - [member1]
+2024/01/17 09:56:15.966 [main] DEBUG org.hibernate.SQL -
+    /* insert com.nhnacademy.springjpa.entity.MemberDetail
+        */ insert
+        into
+            "MemberDetails"
+            ("description", "member_id", "type", "member_detail_id")
+        values
+            (?, ?, ?, ?)
+2024/01/17 09:56:15.966 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [1] as [VARCHAR] - [play]
+2024/01/17 09:56:15.966 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [2] as [VARCHAR] - [member1]
+2024/01/17 09:56:15.966 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [3] as [VARCHAR] - [habit]
+2024/01/17 09:56:15.966 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [4] as [BIGINT] - [1]
+2024/01/17 09:56:15.967 [main] DEBUG org.hibernate.SQL -
+    /* insert com.nhnacademy.springjpa.entity.MemberDetail
+        */ insert
+        into
+            "MemberDetails"
+            ("description", "member_id", "type", "member_detail_id")
+        values
+            (?, ?, ?, ?)
+2024/01/17 09:56:15.967 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [1] as [VARCHAR] - [good]
+2024/01/17 09:56:15.967 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [2] as [VARCHAR] - [member1]
+2024/01/17 09:56:15.967 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [3] as [VARCHAR] - [score]
+2024/01/17 09:56:15.967 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [4] as [BIGINT] - [2]
+2024/01/17 09:56:15.976 [main] DEBUG org.hibernate.SQL -
+    /* select
+        generatedAlias0
+    from
+        Member as generatedAlias0
+    where
+        generatedAlias0.userName=:param0 */ select
+            member0_."member_id" as member_i1_7_,
+            member0_."user_name" as user_nam2_7_
+        from
+            "Members" member0_
+        where
+            member0_."user_name"=?
+2024/01/17 09:56:15.977 [main] TRACE o.h.type.descriptor.sql.BasicBinder - binding parameter [1] as [VARCHAR] - [nhn]
+----
+
+
+
+=== Web Support
+* Spring Data 에서 제공하는 Web 확장 기능
+* DomainClassConverter, HandlerMethodArgumentResolver
+
+.@EnableSpringDataWebSupport
+----
+@Configuration
+@EnableWebMvc
+@EnableSpringDataWebSupport
+public class WebConfig {
+// ...
+}
+----
+
+=== Basic Web Support
+
+==== DomainClassConverter
+* MVC request parameter나 path variable로부터 Spring Data Repository가 관리하는 도메인 클래스로의 conversion을 제공
+** MVC request parameter나 path variable로부터 Entity 를 사용할 수 있다.
+* 추천하지 않음. 다만, 운영 툴에서는 사용할 수 있다. 사용자 서비스 코드는 절대 안됨
+----
+// TODO #4: DTO를 반환하는 repository method를 호출해서 DTO로 응답
+    @GetMapping("/v1/items/{itemId}")
+    public ItemDto getItem1(@PathVariable("itemId") Long itemId) {
+        return itemRepository.findByItemId(itemId);
+    }
+
+    // TODO #5: DomainClassConverter를 이용해서 path variable로 Entity를 받음
+    @GetMapping("/v2/items/{itemId}")
+    public ItemDto getItem2(@PathVariable("itemId") Item item) {
+        return new ItemDto() {
+            @Override
+            public String getName() {
+                return item.getItemName();
+            }
+
+            @Override
+            public Long getPrice() {
+                return item.getPrice();
+            }
+        };
+    }
+----
+
+==== HandlerMethodArgumentResolver
+* MVC request parameter를 Pageable, Sort 인스턴스로 resolver할 수 있도록 해 준다
+* 굉장히 많이 사용.
+* HandlerMethodArgumentResolver 는 Spring Data 에서 제공
+* Web Layer 에서 Data Layer 를 바로 참조해도 되느냐? -> 논란
+* 너무 편해서 사용
+
+===== Controller 에 Pageable 적용
+----
+@RestController
+@RequestMapping("/items")
+public class ItemController {
+@Autowired
+private ItemService itemService;
+
+  @GetMapping
+  public List<ItemDto> getItems(Pageable pageable) {   // GET /items?page=0&size=30
+    return itemService.getItems(pageable);
+  }
+
+}
+----
+
+===== Pageable
+* pagination 정보를 추상화한 인터페이스
+----
+public interface Pageable {
+int getPageNumber();
+int getPageSize();
+int getOffset();
+
+  Sort getSort();
+
+  Pageable next();
+  Pageable previousOrFirst();
+  Pageable first();
+
+  boolean hasPrevious();
+}
+----
+
+===== Pageable interface 의 대표적인 구현
+
+* PageRequest class
+* 테스트 코드에서 용이
+----
+// ?page=0&size=30
+PageRequest.of(0, 30);
+----
+
+===== Pageable을 이용한 Pagination 구현
+
+* JpaRepository.findAll(Pageable pageable) 메서드로 Controller에서 전달받은 Pageable 객체를 그대로 전달
+----
+@Service
+public class ItemServiceImpl implement ItemService {
+  public List<ItemDto> getItems(Pageable pageable) {
+      Page<Item> itemPage = itemRepository.findAll(pageable);
+      // ...
+  }
+}
+----
+
+===== Page interface
+----
+public interface Page<T> extends Slice<T> {
+int getTotalPages();
+long getTotalElements();
+
+    // ...
+}
+----
+===== Slice interface
+----
+public interface Slice<T> extends Streamable<T> {
+	int getNumber();
+	int getSize();
+	int getNumberOfElements();
+	List<T> getContent();
+	boolean hasContent();
+	Sort getSort();
+
+	boolean isFirst();
+	boolean isLast();
+	boolean hasNext();
+	boolean hasPrevious();
+
+    // ...
+}
+----
+
+==== 실습에서 ...
+===== 만약 MemberNameOnly 대신 MemberDto 타입으로 응답한다면?
+----
+failed to lazily initialize a collection of role:
+com.nhnacademy.springjpa.entity.Member.memberDetails,
+could not initialize proxy - no Session
+----
+.cf.) Open EntityManager In View
+* 영속성 컨텍스트를 벗어나서 Lazy Loading 시도 시 LazyInitializationException이 발생
+** 영속성 컨텍스트는 서비스 까지여서 이를 벗어나면 영속성 콘테스트가 닫힘.
+** OSIV (Open Session In View, Open EntityManager In View) 적용해서 해결 가능
+* Spring OSIV : 영속성 컨텍스트가 뷰까지 확장됨
+** org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor
+** org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter
+* Service Layer 에서 완전히 해결한 후 보내는게 정석
+** 급하게 고쳐야 할 때 이를 사용
+* SpringBoot 를 사용하면 이 설정이 자동으로 켜져있음
+** 트랜잭션 영역이 길어질 수 있기 때문에 가이드에서는 이 설정을 끄는걸 권장
+
+=== Querydsl
+* 정적 타입을 이용해서 JPQL을 코드로 작성할 수 있도록 해 주는 프레임워크
+* Criteria API에 비해 매우 편리하고 실용적
+* 무엇보다 Type Safe!
+* dsl : domain specific language
+
+==== Querydsl 쿼리 생성 style
+----
+from(entity)
+.where(/* conditions */)
+.list();
+----
+
+==== Ex.) Querydsl
+* from -> where -> select 순
+----
+QPost post = QPost.post;
+QPostUser postUser = QPostUser.postUser;
+QProjectMember projectMember = QProjectMember.projectMember;
+QMember member = QMember.member;
+
+List<Post> posts = from(post)
+.innerJoin(post.postUsers, postUser)
+.innerJoin(postUser.projectMember, projectMember)
+.innerJoin(projectMember.member, member)
+.where(member.name.eq("dongmyo"))
+.distinct()
+.select(post)
+.fetch();
+----
+----
+List<Post> posts = from(post).fetch(); // select * from posts;
+----
+
+==== Querydsl 설정
+----
+<plugin>
+                <groupId>com.mysema.maven</groupId>
+                <artifactId>apt-maven-plugin</artifactId>
+                <version>1.1.3</version>
+                <configuration>
+                    <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/generated-sources/annotations</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+----
+* <phase>generate-sources</phase> : 코드 생성. compile 단계. phase : 단계.
+* phase : clean, compile, test, deploy 등등
+
+==== Spring Data JPA + Querydsl
+* QuerydslPredicateExecutor
+** 기능에 제한이 있어 권장 x
+* QuerydslRepositorySupport
+**
+
+==== QuerydslRepositorySupport
+
+* JPQLQuery를 통해 Querydsl의 모든 기능 사용 가능
+** Ex.) JOIN
+* QuerydslRepositorySupport 추상 클래스
+** QuerydslRepositorySupport를 상속받는 Custom Repository 구현 필요
+----
+@Repository
+public abstract class QuerydslRepositorySupport {
+  protected JPQLQuery from(EntityPath<?>... paths) { /* ... */ }
+  protected DeleteClause<JPADeleteClause> delete(EntityPath<?> path) { /* ... */ }
+  protected UpdateClause<JPAUpdateClause> update(EntityPath<?> path) { /* ... */ }
+  // ...
+}
+----
+----
+public interface JPQLQuery<T> {
+    JPQLQuery<T> from(EntityPath<?>... sources);
+    <P> JPQLQuery<T> from(CollectionExpression<?,P> target, Path<P> alias);
+
+    <P> JPQLQuery<T> innerJoin(EntityPath<P> target);
+    <P> JPQLQuery<T> innerJoin(EntityPath<P> target, Path<P> alias);
+
+    <P> JPQLQuery<T> join(EntityPath<P> target);
+
+    <P> JPQLQuery<T> leftJoin(EntityPath<P> target);
+
+    <P> JPQLQuery<T> rightJoin(EntityPath<P> target);
+
+    // ...
+}
+----
+
+==== QuerydslRepositorySupport를 이용해 Custom Repository 구현하기
+* Custom Repository를 위한 interface 생성
+* Convention : 확장하고자 하는 repository + Custom
+----
+@NoRepositoryBean
+public interface ItemRepositoryCustom {
+    // querydsl로 복잡한 쿼리를 수행할 메서드.
+    List<Item> complexQuery();
+}
+----
+
+==== Custom Repository 기능 구현
+* QuerydslRepositorySupport 상속
+* ItemRepositoryCustom 구현
+* constructor 구현 필요
+* 구현 메서드에서 Querydsl 사용
+* 주의 : repository + Impl 로 해야함
+** @EnableJpaRepositories 에 String repositoryImplementationPostfix() default "Impl"; 라고 되어있음
+----
+public class ItemRepositoryImpl extends QuerydslRepositorySupport implements ItemRepositoryCustom {
+public ItemRepositoryImpl() {
+super(Item.class);
+}
+
+    @Override
+    public List<Item> complexQuery() {
+        QItem item = QItem.item;
+
+        JPQLQuery query = from(item).where(/* ... */);
+        // ...
+    }
+}
+----
+
+=== N + 1 문제
+* ORM 을 사용해서 생기는 문제 -> 우리가 쿼리를 짜지 않기 때문에 생기는 문제
+* 쿼리 한 번으로 N 건의 레코드를 가져왔을 때, 연관관계 Entity를 가져오기 위해 쿼리를 N번 추가 수행하는 문제
+* N 이 크면 문제가 됨
+
+==== 여러 개의 Entity 조회 + 객체 그래프 탐색
+===== Java Code
+----
+itemRepository.findAll()
+    .stream()
+    .map(Item::getOrderItems)
+    .flatMap(Collection::stream)
+    .collect(Collectors.summarizingInt(OrderItem::getQuantity));
+----
+===== 실제 수행되는 쿼리
+----
+select
+    item0_."item_id" as item_id1_4_,
+    item0_."item_name" as item_nam2_4_,
+    item0_."price" as price3_4_
+from
+    "Items" item0_
+----
+----
+select
+    orderitems0_."item_id" as item_id4_8_0_,
+    orderitems0_."line_number" as line_num1_8_0_,
+    orderitems0_."order_id" as order_id2_8_0_,
+    orderitems0_."line_number" as line_num1_8_1_,
+    orderitems0_."order_id" as order_id2_8_1_,
+    orderitems0_."item_id" as item_id4_8_1_,
+    orderitems0_."quantity" as quantity3_8_1_,
+    order1_."order_id" as order_id1_9_2_,
+    order1_."order_date" as order_da2_9_2_
+from
+    "OrderItems" orderitems0_
+inner join
+    "Orders" order1_
+        on orderitems0_."order_id"=order1_."order_id"
+where
+    orderitems0_."item_id"=1
+----
+----
+select
+    orderitems0_."item_id" as item_id4_8_0_,
+    orderitems0_."line_number" as line_num1_8_0_,
+    orderitems0_."order_id" as order_id2_8_0_,
+    orderitems0_."line_number" as line_num1_8_1_,
+    orderitems0_."order_id" as order_id2_8_1_,
+    orderitems0_."item_id" as item_id4_8_1_,
+    orderitems0_."quantity" as quantity3_8_1_,
+    order1_."order_id" as order_id1_9_2_,
+    order1_."order_date" as order_da2_9_2_
+from
+    "OrderItems" orderitems0_
+inner join
+    "Orders" order1_
+        on orderitems0_."order_id"=order1_."order_id"
+where
+    orderitems0_."item_id"=2
+----
+* ...
+
+==== 해결 방법
+* Fetch Join
+** 연관 관계에 있는 것들을 한 번에 가져온다
+*** 문제점 : 어디까지 참조할 것인가
+** JPQL join fetch
+** Querydsl .fetchJoin()
+* Entity Graph
+** 객체 그래프 탐색 범위를 미리 지정함
+* hibernate
+** n + 1 문제를 완화시키는 느낌으로
+
+==== Fetch Join 주의할 점
+
+===== Pagination + Fetch Join (대형 참사, error 는 없으나 warning 발생)
+* Pagination 쿼리에 Fetch JOIN을 적용하면 실제로는 모든 레코드를 가져오는 쿼리가 실행된다
+* 절대 사용 금물
+* 테이블에 레코드가 몇 개 있던 한 번에 다 가져온 후 메모리에 적재 후 메모리에서 페이지 계산
+** 1억개 가져와서 1페이지 10개를 리턴하고 나머지 다 버림
+
+===== 둘 이상의 컬렉션을 Fetch Join 시 MultipleBagFetchException 발생
+* Java의 java.util.List 타입은 기본적으로 Hibernate의 Bag 타입으로 맵핑됨
+* Bag은 Hibernate에서 중복 요소를 허용하는 비순차(unordered) 컬렉션
+* 둘 이상의 컬렉션(Bag)을 Fetch Join하는 경우
+** 그 결과로 만들어지는 카테시안 곱(Cartesian Product)에서
+** 어느 행이 유효한 중복을 포함하고 있고
+** 어느 행이 그렇지 않은 지 판단할 수 없어
+** MultipleBagFetchException 발생
+* 해결 방법
+** List를 Set으로 변경
+
+==== Entity Graph
+* Entity를 조회하는 시점에 연관 Entity들을 함께 조회할 수 있도록 해주는 기능
+
+.종류
+* 정적 선언 - @NamedEntityGraph
+* 동적 선언 - EntityManager.createEntityGraph()
+
+* Entity에 @NamedEntityGraph 선언
+----
+@NamedEntityGraphs({
+    @NamedEntityGraph(name = "itemWithOrderItems", attributeNodes = {
+        @NamedAttributeNode("orderItems")
+    }),
+    @NamedEntityGraph(name = "itemWithOrderItemsAndOrder", attributeNodes = {
+        @NamedAttributeNode(value = "orderItems", subgraph = "orderItems")
+    }, subgraphs = @NamedSubgraph(name = "orderItems", attributeNodes = {
+        @NamedAttributeNode("order")
+    }))
+})
+@Entity
+public class Item {
+    // ...
+}
+----
+
+* Repository method 에서 @EntityGraph를 이용해서 적용할 entity graph 지정
+----
+@EntityGraph("itemWithOrderItems")
+List<Item> readAllBy();
+----
+
 
 
 
@@ -662,3 +1241,14 @@ int updateItemName(@Param("itemId") Long itemId, @Param("itemName")String itemNa
 * DDD : Domain Driven Design
 * 하나의 DB 테이블에 여러 개의 클래스를 매핑하기 -> 가능
 * 하나의 컬럼에 여러 개의 필드를 매핑 -> 불가능. 단, 두 개 이상의 필드를 사용하는 경우 insertable, updatable = false 로 해야함
+* service layer 사용. service layer 가 트랜잭션의 범위를 잡아주고 비즈니스 로직을 담당함
+* Pageable : interface, PageRequest : 구현체
+* Page : interface, PageImpl : 구현체
+* Basic Binder 로 쿼리의 실제 파라미터 값을 알 수 있는데 mysql 은 남기지 않음
+* 생성자 주입을 쓰는 이유 : 필드, setter 주입을 쓰면 final 을 사용할 수 없다. 또한 훨씬 더 POJO 스러움. 그래서 요즘 트렌드는 생성자 주입.
+* slice 를 쓰면 집계 쿼리(count)를 사용하지 않고 다음 페이지의 존재 유무를 알 수 있다.
+* CQS : CQS(Command Query Separation) Pattern은 소프트웨어 디자인 패턴 중에 하나로, 모든 객체의 메소드를 작업을 수행하는 command, 데이터를 반환하는 query, 이렇게 2개로 구분하는 디자인 패턴
+** CRUD 로 예를 들면 INSERT, UPDATE, DELETE / SELECT
+* Q Type class 를 생성은 compile 을 해야 함
+* EntityManager 는 jpql 로 실행하면 어떤 값이 바뀌는지 모르기 때문에 일단 실행하고 실행 후 반환된 값을 가지고 바뀐 값을 유추함.
+** -> 이 때문에 n + 1 문제 발생
