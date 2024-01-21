@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>사망신고서</title>
+</head>
+<body>
+<table border="1">
+    <tr>
+        <td colspan="6">사망신고서(신고일 : <span th:text="${#temporals.format(deathReportDto.deathReportDate, 'yyyy년 MM월 dd일')}"></span>)</td>
+    </tr>
+    <tr>
+        <td rowspan="4">사망자</td>
+        <td colspan="2">성명</td>
+        <td th:text="${deathReportDto.name}"></td>
+        <td>주민등록번호</td>
+        <td  th:text="${deathReportDto.residentRegistrationNumber}"></td>
+    </tr>
+    <tr>
+        <td colspan="2">사망일시</td>
+        <td colspan="3"><span th:text="${#temporals.format(deathReportDto.deathDate, 'yyyy년 MM월 dd일 HH시 mm분')}"></span>(사망지 시각 : 24시각제로 기재)</td>
+    </tr>
+    <tr>
+        <td rowspan="2">사망장소</td>
+        <td>구분</td>
+        <td colspan="3" th:text="${deathReportDto.deathPlaceCode}"></td>
+    </tr>
+    <tr>
+        <td>주소</td>
+        <td colspan="3" th:text="${deathReportDto.deathPlaceAddress}"></td>
+    </tr>
+    <tr>
+        <td rowspan="3">신고인</td>
+        <td colspan="2">성명</td>
+        <td th:text="${reporter.name}"></td>
+        <td>주민등록번호</td>
+        <td th:text="${reporter.residentRegistrationNumber}"></td>
+    </tr>
+    <tr>
+        <td colspan="2">자격</td>
+        <td colspan="3" th:text="${deathReportDto.deathReportQualificationsCode}"></td>
+    </tr>
+    <tr>
+        <td colspan="2">이메일</td>
+        <td th:text="${deathReportDto.emailAddress}"></td>
+        <td>전화번호</td>
+        <td th:text="${deathReportDto.phoneNumber}"></td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>발급 목록</title>
+</head>
+<body>
+<table border="1">
+    <thead>
+    <tr>
+        <th scope="col">증명서</th>
+        <th scope="col">발급일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="certificateIssue : ${certificateIssues}">
+        <td th:text="${certificateIssue.getCertificateTypeCode}"></td>
+        <td th:text="${#temporals.format(certificateIssue.getCertificateIssueDate, 'yyyy-MM-dd')}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

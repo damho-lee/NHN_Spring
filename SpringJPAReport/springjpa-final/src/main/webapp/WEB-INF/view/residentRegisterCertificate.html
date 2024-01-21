@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>주민등록등본</title>
+    <style>
+        td.static-section {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<table border="1">
+    <tr>
+        <td colspan="5" class="static-section">
+            주민등록등본 (발급일 : <span th:text="${#temporals.format(certificateIssueDate, 'yyyy-MM-dd')}"></span> 증명서확인번호: <span th:text="${#strings.substring(certificateConfirmationNumber,0,8)} + '-' + ${#strings.substring(certificateConfirmationNumber,8,16)}"></span>)
+        </td>
+    </tr>
+    <tr>
+        <td class="static-section">세대주 성명</td>
+        <td th:text="${headOfHousehold.name}"></td>
+        <td class="static-section">세대구성 사유 및 일자</td>
+        <td colspan="2" th:text="${headOfHousehold.reasonAndDAte}"></td>
+    </tr>
+    <tr>
+        <td class="static-section" colspan="3">주소</td>
+        <td class="static-section" colspan="2">신고일</td>
+    </tr>
+    <tr th:each="householdMovementAddress : ${householdMovementAddresses}">
+        <td th:if="${householdMovementAddress.lastAddress == 'Y'}" th:text="현주소"></td>
+        <td th:unless="${householdMovementAddress.lastAddress == 'Y'}" th:text="前주소"></td>
+        <td colspan="2" th:text="${householdMovementAddress.houseMovementAddress}"></td>
+        <td colspan="2"
+            th:text="${#temporals.format(householdMovementAddress.pk.houseMovementReportDate, 'yyyy-MM-dd')}"></td>
+    </tr>
+    <tr>
+        <td class="static-section">세대주 관계</td>
+        <td class="static-section">성명</td>
+        <td class="static-section">주민등록번호</td>
+        <td class="static-section">신고일</td>
+        <td class="static-section">변동사유</td>
+    </tr>
+    <tr th:each="householdCompositionResident : ${householdCompositionResidents}">
+        <td th:text="${householdCompositionResident.householdRelationshipCode}"></td>
+        <td th:text="${householdCompositionResident.name}"></td>
+        <td th:text="${householdCompositionResident.residentRegistrationNumber}"></td>
+        <td th:text="${#temporals.format(householdCompositionResident.reportDate, 'yyyy-MM-dd')}"></td>
+        <td th:text="${householdCompositionResident.householdCompositionChangeReasonCode}"></td>
+    </tr>
+</table>
+
+</body>
+</html>

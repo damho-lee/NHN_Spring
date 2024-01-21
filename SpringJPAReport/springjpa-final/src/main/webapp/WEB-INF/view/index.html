@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">이름</th>
+        <th scope="col">주민등록등본</th>
+        <th scope="col">가족관계증명서</th>
+        <th scope="col">출생신고서</th>
+        <th scope="col">사망신고서</th>
+        <th scope="col">발급목록</th>
+        <th scope="col">삭제</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="resident : ${residents}">
+        <td th:text="${resident.name}"></td>
+        <td th:if="${resident.householdSerialNumber != null}">
+            <a th:href="@{/residentRegister/{residentSerialNumber}(residentSerialNumber = ${resident.residentSerialNumber})}">
+                주민등록등본
+            </a>
+        </td>
+        <td th:unless="${resident.householdSerialNumber != null}"></td>
+        <td>
+            <a th:href="@{/familyRelationship/{residentSerialNumber}(residentSerialNumber = ${resident.residentSerialNumber})}">
+                가족관계증명서
+            </a>
+        </td>
+        <td th:if="${resident.birthDeathReportCode == '출생'}">
+            <a th:href="@{/birthReport/{residentSerialNumber}(residentSerialNumber = ${resident.residentSerialNumber})}">
+                출생신고서
+            </a>
+        </td>
+        <td th:unless="${resident.birthDeathReportCode == '출생'}"></td>
+        <td th:if="${resident.birthDeathReportCode == '사망'}">
+            <a th:href="@{/deathReport/{residentSerialNumber}(residentSerialNumber = ${resident.residentSerialNumber})}">
+                사망신고서
+            </a>
+        </td>
+        <td th:unless="${resident.birthDeathReportCode == '사망'}"></td>
+        <td th:if="${resident.countOfCertificateIssue != 0}">
+            <a th:href="@{/certificateIssue/{residentSerialNumber}(residentSerialNumber = ${resident.residentSerialNumber})}">
+                발급목록
+            </a>
+        </td>
+        <td th:unless="${resident.countOfCertificateIssue != 0}"></td>
+        <td>삭제</td>
+    </tr>
+
+    </tbody>
+</table>
+<div>
+    <span th:each="pageNumber : ${#numbers.sequence(1, endPage)}">
+            <a th:href="@{'/?page=' + ${pageNumber - 1}}">
+                <span th:text="${pageNumber}"></span>
+            </a>
+        </span>
+</div>
+</body>
+</html>
