@@ -54,7 +54,11 @@
             </a>
         </td>
         <td th:unless="${resident.countOfCertificateIssue != 0}"></td>
-        <td>삭제</td>
+        <td>
+            <form th:action="@{'/residentDelete/' + ${resident.residentSerialNumber}}" method="post">
+                <input type="submit" value="삭제">
+            </form>
+        </td>
     </tr>
 
     </tbody>

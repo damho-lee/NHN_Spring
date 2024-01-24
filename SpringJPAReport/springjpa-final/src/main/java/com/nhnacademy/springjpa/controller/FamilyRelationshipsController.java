@@ -1,7 +1,7 @@
 package com.nhnacademy.springjpa.controller;
 
-import com.nhnacademy.springjpa.domain.ResidentRegisterPostRequest;
-import com.nhnacademy.springjpa.domain.ResidentRegisterPutRequest;
+import com.nhnacademy.springjpa.domain.request.ResidentRegisterPostRequest;
+import com.nhnacademy.springjpa.domain.request.ResidentRegisterPutRequest;
 import com.nhnacademy.springjpa.entity.FamilyRelationship;
 import com.nhnacademy.springjpa.exception.FamilyRelationshipNotFoundException;
 import com.nhnacademy.springjpa.exception.ResidentNotExistsException;

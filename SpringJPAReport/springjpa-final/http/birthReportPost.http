@@ -1,0 +1,9 @@
+POST http://localhost:8080/residents/4/birth
+Content-Type: application/json
+
+{
+  "targetSerialNumber": 6,
+  "birthReportQualificationsCode": "비동거친족",
+  "email": "testemail@naver.com",
+  "phoneNumber": "010-1111-1111"
+}

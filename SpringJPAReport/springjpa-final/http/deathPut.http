@@ -1,0 +1,11 @@
+PUT http://localhost:8080/residents/2/death/1
+Content-Type: application/json
+
+{
+  "deathReportQualificationsCode": "비동거친족",
+  "email": "testemail@naver.com",
+  "phoneNumber": "010-1111-1111",
+  "deathDate": "2022-01-20T15:30:00",
+  "deathPlaceCode": "병원",
+  "deathPlaceAddress": "광주"
+}

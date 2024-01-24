@@ -1,5 +1,7 @@
 package com.nhnacademy.springjpa.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nhnacademy.springjpa.Base;
 import java.sql.SQLException;
 import javax.sql.DataSource;
@@ -57,5 +59,12 @@ public class RootConfig {
         initializer.setDatabasePopulator(populator);
 
         return initializer;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 }

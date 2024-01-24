@@ -1,0 +1,10 @@
+POST http://localhost:8080/household
+Content-Type: application/json
+
+{
+  "householdSerialNumber": 2,
+  "householdResidentSerialNumber": 8,
+  "householdCompositionDate": "2022-01-01T00:00:00",
+  "householdCompositionReasonCode": "세대분리",
+  "currentHouseMovementAddress": "세종특별자치시"
+}

@@ -1,0 +1,6 @@
+PUT http://localhost:8080/household/1/movement/20240121
+Content-Type: application/json
+
+{
+  "houseMovementAddress" : "세종특별자치시"
+}

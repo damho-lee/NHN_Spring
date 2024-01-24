@@ -16,4 +16,6 @@ public interface HouseholdCompositionResidentRepository
             "group by hcr.householdRelationshipCode, r.name, r.residentRegistrationNumber, hcr.reportDate, hcr.householdCompositionChangeReasonCode " +
             "order by hcr.reportDate")
     List<HouseholdCompositionResidentDto> findHouseholdCompositionResidentDtoListByHouseholdSerialNumber(int householdSerialNumber);
+
+    int countByPk_HouseholdSerialNumber(int householdSerialNumber);
 }

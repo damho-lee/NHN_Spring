@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ResidentRepository extends JpaRepository<Resident, Integer>, ResidentRepositoryCustom {
     Resident findByResidentSerialNumber(int residentSerialNumber);
+    void deleteByResidentSerialNumber(int residentSerialNumber);
 }

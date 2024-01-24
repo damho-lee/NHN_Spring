@@ -1,0 +1,12 @@
+PUT http://localhost:8080/residents/8
+Content-Type: application/json
+
+{
+  "residentSerialNumber": 8,
+  "name": "이담호",
+  "residentRegistrationNumber": "990522-1234567",
+  "gender": "남",
+  "birthDate": "1999-05-22T17:30:00",
+  "birthPlaceCode": "익산",
+  "registrationBaseAddress": "익산"
+}

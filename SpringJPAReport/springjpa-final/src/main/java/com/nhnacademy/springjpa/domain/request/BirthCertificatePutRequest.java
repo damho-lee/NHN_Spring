@@ -1,4 +1,4 @@
-package com.nhnacademy.springjpa.domain;
+package com.nhnacademy.springjpa.domain.request;
 
 import lombok.NoArgsConstructor;
 import lombok.Value;

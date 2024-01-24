@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,6 +46,7 @@ public class HouseholdCompositionResident { // 세대구성주민
     @Getter
     @Setter
     @EqualsAndHashCode
+    @AllArgsConstructor
     @NoArgsConstructor
     @Embeddable
     public static class Pk implements Serializable {

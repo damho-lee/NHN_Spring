@@ -1,0 +1,6 @@
+PUT http://localhost:8080/residents/1/relationship/7
+Content-Type: application/json
+
+{
+  "relationShip": "mother"
+}

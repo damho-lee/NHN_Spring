@@ -1,7 +1,7 @@
 package com.nhnacademy.springjpa.controller;
 
-import com.nhnacademy.springjpa.domain.BirthCertificatePostRequest;
-import com.nhnacademy.springjpa.domain.BirthCertificatePutRequest;
+import com.nhnacademy.springjpa.domain.request.BirthCertificatePostRequest;
+import com.nhnacademy.springjpa.domain.request.BirthCertificatePutRequest;
 import com.nhnacademy.springjpa.entity.BirthDeathReportResident;
 import com.nhnacademy.springjpa.exception.BirthDeathReportResidentNotFoundException;
 import com.nhnacademy.springjpa.exception.ResidentNotExistsException;

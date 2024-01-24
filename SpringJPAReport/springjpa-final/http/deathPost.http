@@ -1,0 +1,12 @@
+POST http://localhost:8080/residents/4/death
+Content-Type: application/json
+
+{
+  "targetSerialNumber": 6,
+  "deathReportQualificationsCode": "비동거친족",
+  "email": "testemail@naver.com",
+  "phoneNumber": "010-1111-1111",
+  "deathDate": "2022-01-20T15:30:00",
+  "deathPlaceCode": "병원",
+  "deathPlaceAddress": "광주"
+}

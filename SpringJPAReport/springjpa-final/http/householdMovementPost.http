@@ -1,0 +1,6 @@
+POST http://localhost:8080/household/1/movement
+Content-Type: application/json
+
+{
+  "houseMovementAddress" : "익산"
+}
